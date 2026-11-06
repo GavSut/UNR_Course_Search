@@ -1,0 +1,61 @@
+COURSE SEARCH STUDIO — UNR
+
+1. Select subjects (or type any MyNEVADA subject codes), course-number limits,
+   and optional title, instructor, status, component, day, or time filters.
+   By default, all course numbers are eligible and the script uses the term
+   already selected in MyNEVADA. To choose another term, turn that option off.
+
+2. Choose CSV (default), JSON, or TSV under Export. Copy the generated script
+   or save it as a .txt file. Keep the desktop app open until you paste.
+
+3. Sign in to MyNEVADA yourself and open Class Search. Select the desired term.
+   Open your browser's developer console and choose the top execution context.
+   Firefox on Mac: Command–Option–K; Windows/Linux: Ctrl–Shift–K.
+   Paste the entire generated script and press Return. Keep the tab open.
+
+4. The script uses normal class-search controls, expands sections, follows
+   recognized pages, and downloads your chosen file. Review its summary to
+   see whether every requested subject finished. If blocked, run:
+     UNRexport.download()
+   Other formats: UNRexport.downloadCSV(), UNRexport.downloadJSON(),
+   or UNRexport.downloadTSV(). Stop and save partial data: UNRexport.stop().
+
+WHAT THE FILTERS MEAN
+• All listed meetings of an individual section must fit the selected days
+  and hours. Endpoints are inclusive. Hours are campus-local, 24-hour time.
+• TBA, missing, overnight, or unrecognized schedules need review when the
+  time/day filter is on. TBA does not prove online or asynchronous delivery.
+• When time filtering is off, TBA sections can match your other criteria;
+  Schedule verified will still say No.
+• Comma-separated title keywords use ANY-match, ignoring case. Instructor
+  accepts part of a name. Blank fields mean no restriction.
+• Course numbers are numeric ranges, not a guarantee of degree applicability.
+• Component filters (LEC, LAB, etc.) select individual sections. They do not
+  verify linked lecture/lab enrollment combinations.
+• Most filters are applied after collection. Closed sections are collected
+  too, so the JSON retains the other course components for inspection.
+
+READING THE FILE
+CSV / TSV: the first data row is Search summary, followed by one row per
+meeting. Match distinguishes Matches selected filters from Needs review.
+The optional needs-review checkbox affects CSV/TSV only. A header plus a
+summary with zero matches is a valid result. PARTIAL filenames and the
+Search completeness column identify unfinished searches. Search notes name
+unfinished subjects and any error. Start/end times use 24-hour time and
+meeting dates use YYYY-MM-DD when recognizable.
+JSON: results.matched, results.needsReview, results.excluded, and
+results.unparsedRows contain the audit. courses retains raw text and rows.
+The summary and searches fields describe collection progress.
+
+LIMITATIONS AND PRIVACY
+This independent tool supports UNR's observed MyNEVADA layout; it is not an
+official university service or a universal adapter for other universities.
+Verify required lecture/lab/discussion combinations, credits, prerequisites,
+permissions, and seats in MyNEVADA. Broad searches can hit university limits;
+narrow subjects or minimum course numbers and inspect any partial export.
+No section-detail-only credits, delivery modes, or prerequisites are inferred.
+Page layout changes may require updating the engine.
+Neither builder asks for passwords or uploads your results. The generated
+script works in your browser session using normal search controls and does
+not enroll you. Saved settings contain filters only. GitHub Pages serves the
+builder; it does not access MyNEVADA on your behalf.

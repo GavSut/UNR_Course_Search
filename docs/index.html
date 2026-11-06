@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Course Search Studio · UNR</title>
+  <meta name="description" content="Build a custom MyNEVADA search script for any UNR major. Filter courses around your schedule and export a readable CSV.">
+  <link rel="stylesheet" href="./assets/styles.css">
+  <script defer src="./assets/core.js"></script><script defer src="./assets/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#builder">Skip to search builder</a>
+<header class="site-header"><div class="shell header-inner">
+  <a class="brand" href="./"><span class="brand-icon" aria-hidden="true">C<span>▥</span></span><span>Course Search <b>Studio</b><small>FOR UNR STUDENTS</small></span></a>
+  <nav aria-label="Main navigation"><a href="#how-it-works">How it works</a><a class="nav-download" href="./downloads/UNR_Course_Script_Builder.py" download>Download Python app <span aria-hidden="true">↗</span></a></nav>
+</div></header>
+<main class="shell">
+  <section class="intro">
+    <div><p class="eyebrow"><span class="dot"></span> YOUR CLASSES. YOUR SCHEDULE.</p><h1>Find the classes<br>that fit.</h1><p class="lede">Any major. Any course level. Build a MyNEVADA search around your interests and availability, then take the results with you.</p></div>
+    <aside class="intro-note"><span class="small-label">A SIMPLE WORKFLOW</span><ol><li><b>Choose your filters</b><span>Here, or in the Python app.</span></li><li><b>Run your script in MyNEVADA</b><span>Use your own signed-in session.</span></li><li><b>Open your course spreadsheet</b><span>Readable CSV, or JSON / TSV.</span></li></ol></aside>
+  </section>
+  <section id="builder" class="workspace" aria-label="Course search builder">
+    <div class="editor">
+      <div class="editor-heading"><div><p class="small-label">SEARCH BUILDER</p><h2>Make it your own</h2></div><button class="text-button" id="reset" type="button">Reset filters</button></div>
+      <div class="tabs" role="tablist" aria-label="Search configuration">
+        <button id="tab-search" role="tab" aria-selected="true" aria-controls="panel-search" tabindex="0">Search settings</button>
+        <button id="tab-subjects" role="tab" aria-selected="false" aria-controls="panel-subjects" tabindex="-1">Subjects <span class="count" id="subject-badge">0</span></button>
+        <button id="tab-export" role="tab" aria-selected="false" aria-controls="panel-export" tabindex="-1">Export</button>
+      </div>
+      <form id="settings-form" novalidate>
+        <section id="panel-search" class="panel" role="tabpanel" aria-labelledby="tab-search">
+          <fieldset><legend>Term</legend><label class="check-line"><input id="useCurrentTerm" type="checkbox" checked> Use the term selected in MyNEVADA</label><p class="hint">Turn this off to choose a specific term. Only available terms can be searched.</p>
+            <div class="field-row" id="term-fields"><label>Year<input id="year" type="number" min="2000" max="2099" inputmode="numeric"></label><label>Term<select id="season"><option>Spring</option><option>Summer</option><option>Fall</option><option>Winter</option></select></label></div>
+            <label class="spaced">Exact term label <span class="optional">optional</span><input id="termOverride" type="text" placeholder="For example: 2027 Spring" maxlength="100"></label>
+          </fieldset>
+          <fieldset><legend>Course range</legend><label>Quick range<select id="level"><option value="all">All course numbers</option><option value="lower">100–299</option><option value="upper">300–499</option><option value="graduate">600–999</option><option value="custom">Custom range</option></select></label><div class="field-row spaced"><label>Minimum<input id="minimumCourseNumber" inputmode="numeric" placeholder="No minimum"></label><label>Maximum<input id="maximumCourseNumber" inputmode="numeric" placeholder="No maximum"></label></div><p class="hint">Numeric ranges only; check how courses count toward your degree.</p></fieldset>
+          <fieldset><legend>Refine your results <span class="optional">optional</span></legend>
+            <label>Course title keywords<input id="keywords" placeholder="For example: design, history, writing"><span class="hint">Matches any comma-separated keyword.</span></label>
+            <label class="spaced">Instructor contains<input id="instructor" placeholder="Name or part of a name"></label>
+            <div class="field-row spaced"><label>Class status<select id="status"><option>Any</option><option>Open</option><option>Closed</option><option>Waitlist</option></select></label><label>Section type<select id="component"><option value="">Any type</option><option value="LEC">Lecture (LEC)</option><option value="LAB">Lab (LAB)</option><option value="DIS">Discussion (DIS)</option><option value="SEM">Seminar (SEM)</option><option value="IND">Independent study (IND)</option><option value="FLD">Field study (FLD)</option><option value="PRA">Practicum (PRA)</option></select></label></div>
+          </fieldset>
+          <fieldset><legend>Availability</legend><label class="check-line"><input id="filterSchedule" type="checkbox"> Require every listed meeting to fit my availability</label><div id="availability-fields"><div id="days" class="days" aria-label="Allowed meeting days"></div><div class="field-row"><label>Start no earlier than<input id="start" type="time" value="08:00"></label><label>End no later than<input id="end" type="time" value="18:00"></label></div></div><p class="hint">Campus-local time. TBA and unrecognized schedules are marked “Needs review” when this filter is on.</p></fieldset>
+        </section>
+        <section id="panel-subjects" class="panel" role="tabpanel" aria-labelledby="tab-subjects" hidden>
+          <h3>Explore across majors</h3><p class="hint">Choose from common subjects, or enter any other MyNEVADA subject code. This is a starter list, not a list of live offerings.</p>
+          <label class="spaced">Find a subject<input id="subject-filter" type="search" placeholder="Search by name or code" autocomplete="off"></label>
+          <div class="subject-tools"><button class="text-button" id="select-shown" type="button">Select shown</button><button class="text-button" id="clear-subjects" type="button">Clear selections</button><span id="subject-count" class="hint">0 selected</span></div>
+          <div id="subjects" class="subject-grid"></div><p id="no-subjects" class="hint" hidden>No suggestions match. Add the subject code below.</p>
+          <label class="spaced">Additional subject codes<input id="customSubjects" placeholder="For example: NURS, ME, MGT" autocapitalize="characters" spellcheck="false"><span class="hint">Separate codes with commas. Confirm any unfamiliar code in MyNEVADA.</span></label>
+        </section>
+        <section id="panel-export" class="panel" role="tabpanel" aria-labelledby="tab-export" hidden>
+          <h3>A spreadsheet you can actually read</h3><p class="hint">Choose the file that downloads automatically when the browser search finishes.</p>
+          <div class="format-options">
+            <label class="format-card"><input type="radio" name="outputFormat" value="csv" checked><span><b>CSV <em>RECOMMENDED</em></b><small>Open in Excel, Numbers, or Google Sheets.</small></span><strong>.csv</strong></label>
+            <label class="format-card"><input type="radio" name="outputFormat" value="json"><span><b>JSON</b><small>Full raw results, exclusions, and search audit.</small></span><strong>.json</strong></label>
+            <label class="format-card"><input type="radio" name="outputFormat" value="tsv"><span><b>TSV</b><small>The same readable table, separated by tabs.</small></span><strong>.tsv</strong></label>
+          </div>
+          <label class="check-line spaced"><input id="includeReview" type="checkbox" checked> Include needs-review sections in CSV / TSV</label><p class="hint">JSON always keeps all collected data, regardless of this setting.</p>
+          <div class="info-note"><b>Clear about what matched.</b><p>CSV and TSV begin with a search summary, then one row per meeting. Columns show the course, section, instructor, days, times, room, status, and review notes. Incomplete searches are labeled <strong>PARTIAL</strong>.</p></div>
+          <p class="hint">Need another format later? Run <code>UNRexport.downloadJSON()</code>, <code>UNRexport.downloadCSV()</code>, or <code>UNRexport.downloadTSV()</code> in the same browser tab.</p>
+        </section>
+      </form>
+      <div class="editor-footer"><span>Keep a search for next time</span><div><button class="text-button" id="save-settings" type="button">Save settings</button><button class="text-button" id="load-settings" type="button">Load settings</button><input id="settings-file" type="file" accept=".json,application/json" hidden></div></div>
+    </div>
+    <aside class="summary" aria-label="Your search summary"><p class="small-label">YOUR SEARCH</p><h2>Ready when you are.</h2><dl><div><dt>Term</dt><dd id="summary-term"></dd></div><div><dt>Course numbers</dt><dd id="summary-level"></dd></div><div><dt>Availability</dt><dd id="summary-time"></dd></div><div><dt>Download</dt><dd id="summary-format"></dd></div></dl>
+      <div class="selected"><span class="small-label">SUBJECTS</span><div id="selected-subjects"></div></div>
+      <button id="copy-script" class="button primary" type="button">Copy console script <span aria-hidden="true">↗</span></button>
+      <button id="download-script" class="button secondary" type="button">Download script (.txt)</button>
+      <p class="summary-help">Paste your script into the <b>top browser console</b> on MyNEVADA’s Class Search page. The spreadsheet downloads after the search runs.</p>
+      <details id="preview-details"><summary>Inspect generated script</summary><label class="sr-only" for="script-preview">Generated JavaScript</label><textarea id="script-preview" readonly spellcheck="false" placeholder="Select subjects, then open this preview."></textarea></details>
+      <p id="message" role="status" aria-live="polite"></p>
+      <p class="privacy">Your search stays with you.<br>No login, password, or results upload here.</p>
+    </aside>
+  </section>
+  <section id="how-it-works" class="how"><div><p class="small-label">FROM FILTERS TO SPREADSHEET</p><h2>A few steps.<br>A useful shortlist.</h2><p>This independent tool generates a script. MyNEVADA remains the source for live class information.</p><a href="./downloads/INSTRUCTIONS.txt" download>Download full instructions <span aria-hidden="true">↓</span></a></div>
+    <div class="how-steps"><article><span>01</span><div><h3>Build and copy</h3><p>Choose subjects and filters above. CSV is the default. Save your settings if you want to reuse them.</p></div></article><article><span>02</span><div><h3>Open MyNEVADA Class Search</h3><p>Sign in yourself and choose a term. Open the browser developer console and select the <b>top</b> context. In Firefox: <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>K</kbd> on Mac, or <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>K</kbd> on Windows/Linux.</p></div></article><article><span>03</span><div><h3>Paste, run, and review</h3><p>Paste the entire script and press Return. Keep the tab open. Review the downloaded summary for unfinished searches. Stop with <code>UNRexport.stop()</code>; download again with <code>UNRexport.download()</code>.</p></div></article></div>
+  </section>
+  <section class="limits"><h3>Before you register</h3><p>Matches are individual sections. Confirm required lecture/lab combinations, credits, prerequisites, permissions, and seats in MyNEVADA. TBA does not mean asynchronous. Broad searches can hit university limits; narrow your criteria and inspect any partial export.</p><p>The engine supports UNR’s observed MyNEVADA layout. Other universities need their own adapter. The website and Python app use the same search engine.</p></section>
+</main>
+<footer class="shell"><span>Course Search Studio <b>·</b> Independent student tool</span><span>Built for UNR students. Not affiliated with UNR.</span></footer>
+</body></html>
