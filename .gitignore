@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.venv/
+node_modules/
+test-output/
+# Keep your personal search results and saved preferences out of a public repo.
+UNR_*_courses.csv
+UNR_*_courses.tsv
+UNR_*_courses.json
+UNR_search_settings.json
