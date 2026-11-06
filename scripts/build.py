@@ -21,6 +21,8 @@ def build():
         path.parent.mkdir(parents=True,exist_ok=True);path.write_text(desktop,encoding='utf-8')
     (ROOT/'docs/assets/core.js').write_text(core,encoding='utf-8')
     (ROOT/'docs/downloads/INSTRUCTIONS.txt').write_text(instructions,encoding='utf-8')
+    schedule=(ROOT/'src/schedule-engine.js').read_text().replace('/*__MATCHING__*/',(ROOT/'src/matching.js').read_text())
+    (ROOT/'docs/assets/schedule-engine.js').write_text(schedule,encoding='utf-8')
     (ROOT/'docs/.nojekyll').touch()
     print('Built standalone Python app and GitHub Pages assets.')
 

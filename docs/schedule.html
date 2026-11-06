@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Schedule Builder · Course Search Studio</title>
+<meta name="description" content="Upload MyNEVADA course results, compare sections, check conflicts, and build your UNR class schedule. Private, browser-local planning.">
+<link rel="stylesheet" href="./assets/styles.css"><link rel="stylesheet" href="./assets/schedule.css">
+<script defer src="./assets/schedule-engine.js"></script><script defer src="./assets/schedule.js"></script>
+</head>
+<body class="schedule-page">
+<a class="skip" href="#planner">Skip to schedule builder</a>
+<header class="site-header"><div class="planner-shell header-inner">
+<a class="brand" href="./index.html"><span class="brand-icon" aria-hidden="true">C<span>▥</span></span><span>Course Search <b>Studio</b><small>FOR UNR STUDENTS</small></span></a>
+<nav aria-label="Main navigation"><a href="./index.html">Search builder</a><a href="./schedule.html" aria-current="page">Schedule builder</a><button class="help-link" id="help-open">How it works</button></nav>
+</div></header>
+<main class="planner-shell" id="planner">
+<section class="planner-intro"><div><p class="eyebrow"><span class="dot"></span> FROM SEARCH RESULTS TO A REAL PLAN</p><h1>Make room for<br class="mobile-break"> your semester.</h1><p>Explore your options. See the week. Find a schedule that fits.</p></div><div class="intro-actions"><button class="btn primary-btn" id="upload-button"><span aria-hidden="true">↑</span> Upload results</button><button class="btn" id="backup-button">Save backup</button><input type="file" id="upload-file" accept=".json,.csv,.tsv" multiple hidden></div></section>
+<div id="message" class="notice" role="status" aria-live="polite" hidden></div>
+<div id="download-ready" class="notice" hidden></div>
+<div id="storage-warning" class="notice danger" role="alert" hidden></div>
+<section id="onboarding" class="start-card">
+<div class="upload-symbol" aria-hidden="true">▤<span>↑</span></div><div><p class="small-label">START WITH YOUR COURSE RESULTS</p><h2>Your next semester starts here.</h2><p>Drop a JSON, CSV, or TSV export anywhere on this page, or choose a file. Your results stay in this browser.</p><div class="start-actions"><button class="btn primary-btn" id="start-upload">Choose results file</button><button class="btn" id="demo-button">Try a sample semester</button><a href="./index.html">Need results? Build a search ↗</a></div><p class="small-note">Already have a saved schedule backup? Upload it here to restore your plans.</p></div>
+</section>
+<div id="workspace" hidden>
+<section class="plan-bar" aria-label="Schedule management">
+<label class="plan-choice">Current plan<select id="plan-select"></select></label><div class="plan-actions"><button class="btn compact" id="new-plan">+ New plan</button><button class="btn compact" id="duplicate-plan">Duplicate</button><button class="btn compact" id="rename-plan">Rename</button><button class="btn compact" id="compare-plans">Compare</button><button class="icon-btn" id="delete-plan" aria-label="Delete current plan" title="Delete current plan">×</button></div>
+<span class="saved-state" id="saved-state">Saved in this browser</span>
+</section>
+<div class="stats" id="stats"></div>
+<div class="planner-grid">
+<aside class="catalog-panel" aria-label="Course explorer">
+<div class="catalog-heading"><div><p class="small-label">COURSE EXPLORER</p><h2>Find your fit</h2></div><button class="text-button" id="reset-filters">Reset</button></div>
+<div class="search-wrap"><label class="sr-only" for="query">Search courses, instructors, or class numbers</label><input type="search" id="query" placeholder="Course, keyword, instructor, class #" autocomplete="off"><span aria-hidden="true">⌕</span></div>
+<div class="quick-filters"><label>Subject<select id="subject-filter"><option value="">All subjects</option></select></label><label>Course level<select id="level-filter"><option value="">All levels</option><option value="100:299">100–299</option><option value="300:499">300–499</option><option value="600:699">600–699</option><option value="700:799">700–799</option><option value="800:999">800–999</option></select></label></div>
+<details class="filter-details"><summary>More filters <span id="filter-count"></span></summary><div class="filter-body">
+<label>Instructor<input id="instructor-filter" type="search" placeholder="Name contains…"></label><div class="quick-filters"><label>Status<select id="status-filter"><option value="">Any status</option><option>Open</option><option>Closed</option><option>Waitlist</option><option>Unknown</option></select></label><label>Component<select id="component-filter"><option value="">All types</option></select></label></div>
+<label class="check-line"><input type="checkbox" id="hide-research"> Hide research, thesis &amp; independent study</label><label class="check-line"><input type="checkbox" id="known-only"> Only fully timed sections</label>
+<label class="check-line"><input type="checkbox" id="availability-on"> Fit all meetings within my availability</label><div id="availability-fields" hidden><div class="day-picker" id="allowed-days"></div><div class="quick-filters"><label>Earliest start<input id="earliest" type="time" value="08:00"></label><label>Latest finish<input id="latest" type="time" value="18:00"></label></div><p class="small-note">Every meeting must fit. Unknown times are excluded while this filter is on.</p></div>
+</div></details>
+<div class="filter-toggles"><label class="check-line"><input type="checkbox" id="favorites-only"> Starred courses</label><label class="check-line"><input type="checkbox" id="no-conflicts"> Hide time conflicts</label></div>
+<button class="btn combinations-button" id="suggest-schedules">Explore starred-course combinations</button>
+<div class="results-toolbar"><span id="result-count" aria-live="polite"></span><label><span class="sr-only">Sort results</span><select id="sort-results"><option value="course">Course number</option><option value="title">Course title</option><option value="time">Earliest start</option></select></label></div>
+<div id="results" class="results"></div><button class="btn load-more" id="load-more" hidden>Show more sections</button>
+</aside>
+<section class="schedule-panel" aria-label="Schedule workspace">
+<div class="calendar-card">
+<div class="calendar-toolbar"><div><p class="small-label" id="calendar-term">YOUR WEEK</p><h2 id="plan-title">Schedule A</h2></div><div class="view-switch" role="group" aria-label="Calendar view"><button data-view="week" aria-pressed="true">Week</button><button data-view="day" aria-pressed="false">Day</button><button data-view="agenda" aria-pressed="false">Agenda</button></div></div>
+<div class="week-toolbar"><div class="date-controls"><button class="icon-btn" id="previous-week" aria-label="Previous week">‹</button><label><span class="sr-only">Calendar date</span><input id="calendar-date" type="date"></label><button class="icon-btn" id="next-week" aria-label="Next week">›</button></div><span id="week-label"></span><label class="check-line weekend-toggle"><input type="checkbox" id="show-weekend"> Weekends</label></div>
+<div id="calendar-empty" class="calendar-empty" hidden><span aria-hidden="true">＋</span><b>A little possibility. A lot of room.</b><p>Add sections from the explorer to see your week take shape.</p></div>
+<div id="calendar-container" class="calendar-scroll"></div>
+<div class="calendar-footer"><span>America/Los_Angeles · campus time</span><button class="text-button" id="add-block">+ Add personal time block</button></div>
+</div>
+<section class="review-card"><div class="section-title"><h2>Schedule check</h2><label class="buffer-label">Time between meetings<select id="buffer"><option value="0">No buffer</option><option value="10">10 minutes</option><option value="15">15 minutes</option><option value="30">30 minutes</option></select></label></div><div id="review"></div></section>
+<section class="selected-card"><div class="section-title"><div><p class="small-label">YOUR SELECTIONS</p><h2>Courses in this plan</h2></div><button class="text-button" id="clear-plan">Clear selections</button></div><div id="selected-courses"></div><div id="personal-blocks"></div></section>
+<details class="settings-card"><summary>Plan dates &amp; export</summary><div class="settings-body"><p class="small-note">Optional fallback dates for meetings without dates in the export. Existing section dates take priority.</p><div class="quick-filters"><label>Term starts<input id="term-start" type="date"></label><label>Term ends<input id="term-end" type="date"></label></div><div class="export-actions"><button class="btn" id="export-calendar">Download calendar (.ics)</button><button class="btn" id="export-csv">Download plan CSV</button><button class="btn" id="print-plan">Print / save PDF</button></div><p class="small-note">Calendar downloads include recurring meetings and personal blocks with known dates and times. Check university holidays, breaks, and one-off changes before relying on an imported calendar.</p></div></details>
+</section>
+</div>
+<details class="import-details"><summary>Imported files &amp; coverage <span id="import-count"></span></summary><div id="import-info"></div><p>These are snapshots, not live registration data. Verify seats, credits, prerequisites, permissions, and required component pairings in MyNEVADA. TBA does not necessarily mean online or asynchronous.</p></details>
+</div>
+</main>
+<footer class="planner-shell planner-footer"><span>Course Search Studio <b>·</b> Independent student tool. Not affiliated with UNR.</span><span>Local plans <b>·</b> No account required <b>·</b> No results sent to a server</span></footer>
+<div class="drop-overlay" id="drop-overlay" hidden><div><span aria-hidden="true">↑</span><h2>Drop your results here</h2><p>JSON, CSV, TSV, or a saved schedule backup</p></div></div>
+<dialog id="modal"><form method="dialog" class="modal-top"><h2 id="modal-title"></h2><button class="icon-btn" aria-label="Close dialog">×</button></form><div id="modal-body"></div></dialog>
+<noscript><p class="notice danger">Enable JavaScript to import courses and build a schedule.</p></noscript>
+</body></html>
